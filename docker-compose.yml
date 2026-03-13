@@ -1,0 +1,46 @@
+services:
+  app:
+    build: ./app
+    container_name: inventory-app
+    ports:
+      - "3000:3000"
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_ROLE_ID=${VAULT_ROLE_ID}
+      - VAULT_SECRET_ID=${VAULT_SECRET_ID}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=inventory
+      - DB_SSL_MODE=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - inventory-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: inventory-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=inventory
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - inventory-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d inventory"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+
+networks:
+  inventory-network:
+    driver: bridge
