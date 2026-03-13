@@ -53,7 +53,7 @@ async function getDatabaseCredentials() {
     
     // Récupération des credentials dynamiques PostgreSQL
     console.log('📡 Récupération des credentials PostgreSQL depuis Vault...');
-    const credsResult = await vaultClient.read('database/creds/inventory-role');
+    const credsResult = await vaultClient.read(process.env.VAULT_DB_CREDS_PATH);
     
     const credentials = {
       username: credsResult.data.username,
