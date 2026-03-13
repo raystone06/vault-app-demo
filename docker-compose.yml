@@ -11,7 +11,7 @@ services:
       - VAULT_DB_CREDS_PATH=${VAULT_DB_CREDS_PATH}
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_NAME=postrres
+      - DB_NAME=postgres
       - DB_SSL_MODE=disable
     depends_on:
       postgres:
