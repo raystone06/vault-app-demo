@@ -12,10 +12,11 @@ const VAULT_SECRET_ID = process.env.VAULT_SECRET_ID;
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = process.env.DB_PORT || 5432;
 const DB_NAME = process.env.DB_NAME || 'inventory';
+const VAULT_DB_CREDS_PATH = process.env.VAULT_DB_CREDS_PATH;
 
 // Validation des variables d'environnement requises
 function validateEnv() {
-  const required = ['VAULT_ADDR', 'VAULT_ROLE_ID', 'VAULT_SECRET_ID'];
+  const required = ['VAULT_ADDR', 'VAULT_ROLE_ID', 'VAULT_SECRET_ID', 'VAULT_DB_CREDS_PATH'];
   const missing = required.filter(key => !process.env[key]);
   
   if (missing.length > 0) {
@@ -53,7 +54,7 @@ async function getDatabaseCredentials() {
     
     // Récupération des credentials dynamiques PostgreSQL
     console.log('📡 Récupération des credentials PostgreSQL depuis Vault...');
-    const credsResult = await vaultClient.read(process.env.VAULT_DB_CREDS_PATH);
+    const credsResult = await vaultClient.read(VAULT_DB_CREDS_PATH);
     
     const credentials = {
       username: credsResult.data.username,
